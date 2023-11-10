@@ -1,7 +1,6 @@
-package Iterators;
+package Iterator;
 
 import entity.Playlist;
-import entity.Song;
 
 import java.util.ArrayList;
 

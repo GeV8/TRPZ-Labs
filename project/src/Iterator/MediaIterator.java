@@ -1,4 +1,4 @@
-package Iterators;
+package Iterator;
 
 public interface MediaIterator<T> {
     boolean hasNext();

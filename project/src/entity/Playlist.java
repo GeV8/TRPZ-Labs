@@ -1,6 +1,10 @@
 package entity;
 
+import Iterator.PlaylistIterator;
+import Iterator.SongIterator;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class Playlist {
@@ -11,11 +15,11 @@ public class Playlist {
 
     private ArrayList<Song> songs;
 
-    public Playlist(String name, int duration, double size, HashMap<String, Song> songs) {
+    public Playlist(String name) {
         this.id = System.nanoTime();
         this.name = name;
-        this.duration = duration;
-        this.size = size;
+        this.duration = 0;
+        this.size = 0;
         this.songs = new ArrayList<>();
     }
 
