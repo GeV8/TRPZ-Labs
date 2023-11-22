@@ -2,6 +2,7 @@ package entity;
 
 import Iterator.PlaylistIterator;
 import Iterator.SongIterator;
+import command.PlaylistCommand.Snapshot;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -57,5 +58,9 @@ public class Playlist {
 
     public void setSongs(ArrayList<Song> songs) {
         this.songs = songs;
+    }
+
+    public Snapshot createSnapshot(){
+        return new Snapshot(this, this.songs);
     }
 }

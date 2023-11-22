@@ -1,6 +1,7 @@
 package service;
 
 import Iterator.SongIterator;
+import command.PlaylistCommand.Snapshot;
 import entity.Playlist;
 import entity.Song;
 import repository.PlaylistRepository;
@@ -62,5 +63,9 @@ public class PlaylistService {
         }
         playlist.setDuration(duration);
         playlist.setSize(size);
+    }
+
+    public Playlist getOpenedPlaylist() {
+        return openedPlaylist;
     }
 }

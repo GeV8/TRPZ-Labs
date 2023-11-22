@@ -1,8 +1,10 @@
 package command.SongCommand;
 
+import entity.Song;
 import service.SongService;
 
 public class SongPlayCommand extends SongCommand {
+    Song song;
     private SongService songService;
 
     public SongPlayCommand(SongService songService) {
@@ -11,7 +13,7 @@ public class SongPlayCommand extends SongCommand {
 
 
     @Override
-    public void execute(long id) {
-        songService.playMusic(id);
+    public void execute() {
+        songService.playMusic(song.getId());
     }
 }

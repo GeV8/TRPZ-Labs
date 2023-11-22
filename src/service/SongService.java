@@ -1,5 +1,6 @@
 package service;
 
+import command.PlaylistCommand.Snapshot;
 import entity.Song;
 import repository.SongRepository;
 
@@ -14,12 +15,12 @@ public class SongService {
         musicIsPlaying = true;
     }
 
-    public void pauseMusic(long id) {
+    public void pauseMusic() {
         songThatIsPlaying = null;
         musicIsPlaying = false;
     }
 
-    public void repeatSong(long id) {
+    public void repeatSong() {
         isSongRepeated = true;
     }
 
@@ -31,4 +32,6 @@ public class SongService {
         Song newSong = new Song(name, author, genre, duration, size);
         songRepository.add(newSong);
     }
+
+
 }

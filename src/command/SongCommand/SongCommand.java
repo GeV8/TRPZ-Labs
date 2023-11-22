@@ -3,5 +3,5 @@ package command.SongCommand;
 import service.SongService;
 
 public abstract class SongCommand {
-    public abstract void execute(long id);
+    public abstract void execute();
 }
