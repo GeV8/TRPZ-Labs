@@ -7,21 +7,30 @@ import command.PlaylistCommand.Snapshot;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Playlist {
     private final long id;
     private String name;
-    private int duration;
-    private double size;
 
-    private ArrayList<Song> songs;
+
+    private LinkedList<Song> songs;
 
     public Playlist(String name) {
         this.id = System.nanoTime();
         this.name = name;
-        this.duration = 0;
-        this.size = 0;
-        this.songs = new ArrayList<>();
+        this.songs = new LinkedList<>();
+    }
+    public Playlist(String name, long id, LinkedList<Song> list) {
+        this.id = id;
+        this.name = name;
+        this.songs = list;
+    }
+
+    public Playlist(long id, String name) {
+        this.id = id;
+        this.name = name;
+        this.songs=new LinkedList<>();
     }
 
     public long getId() {
@@ -36,31 +45,22 @@ public class Playlist {
         this.name = name;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public double getSize() {
-        return size;
-    }
-
-    public void setSize(double size) {
-        this.size = size;
-    }
-
-    public ArrayList<Song> getSongs() {
+    public LinkedList<Song> getSongs() {
         return songs;
     }
 
-    public void setSongs(ArrayList<Song> songs) {
+    public void setSongs(LinkedList<Song> songs) {
         this.songs = songs;
     }
 
-    public Snapshot createSnapshot(){
+    public Snapshot createSnapshot() {
         return new Snapshot(this, this.songs);
+    }
+
+    @Override
+    public String toString() {
+        return "Playlist{" +
+                "id=" + id +
+                ", name='" + name + "}";
     }
 }

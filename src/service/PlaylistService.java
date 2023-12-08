@@ -1,21 +1,22 @@
 package service;
 
 import Iterator.SongIterator;
-import command.PlaylistCommand.Snapshot;
 import entity.Playlist;
 import entity.Song;
-import repository.PlaylistRepository;
+import repository.IPlaylistRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.sql.SQLException;
 import java.util.Collections;
 
 public class PlaylistService {
-    PlaylistRepository playlistRepository;
+    IPlaylistRepository playlistRepository;
     Playlist openedPlaylist;
 
+    public PlaylistService(IPlaylistRepository playlistRepository) {
+        this.playlistRepository = playlistRepository;
+    }
 
-    public void openPlaylist(long id) {
+    public void openPlaylist(long id) throws SQLException {
         openedPlaylist = playlistRepository.getById(id);
     }
 
@@ -23,49 +24,33 @@ public class PlaylistService {
         openedPlaylist = null;
     }
 
-    public void addSongToPlaylist(long idOfPlaylist, Song song) {
-        int duration = 0;
-        Playlist playlist = playlistRepository.getById(idOfPlaylist);
-        playlist.getSongs().add(song);
-        countDurationAndSizeOfPlaylist(playlist);
-
-
+    public Playlist getPlaylistForAddingSong(long idOfPlaylist) throws SQLException {
+        return playlistRepository.getById(idOfPlaylist);
     }
 
     public void removeSongFromPlaylist(Song song) {
         openedPlaylist.getSongs().remove(song);
-        countDurationAndSizeOfPlaylist(openedPlaylist);
     }
 
     public void shufflePlaylist() {
         Collections.shuffle(openedPlaylist.getSongs());
     }
 
-    public void createPlaylist(String name) {
-        Playlist newPlaylist = new Playlist(name);
-        playlistRepository.add(newPlaylist);
+    public void createPlaylist(Playlist playlist) throws SQLException {
+        playlistRepository.add(playlist);
     }
 
-    public void deletePlaylist() {
+    public void deletePlaylist() throws SQLException {
         playlistRepository.delete(openedPlaylist.getId());
         openedPlaylist = null;
     }
 
-    private void countDurationAndSizeOfPlaylist(Playlist playlist) {
-        int duration = 0;
-        double size=0;
-        Song songToIterate;
-        SongIterator songIterator = new SongIterator(playlist.getSongs());
-        while (songIterator.hasNext()) {
-            songToIterate= songIterator.getNext();
-            duration+=songToIterate.getDuration();
-            size+=songToIterate.getSize();
-        }
-        playlist.setDuration(duration);
-        playlist.setSize(size);
-    }
 
     public Playlist getOpenedPlaylist() {
         return openedPlaylist;
+    }
+
+    public void addSongToPlaylist(long idOfPlaylist, long idOfSong) throws SQLException {
+        playlistRepository.addSongToPlaylist(idOfPlaylist, idOfSong);
     }
 }

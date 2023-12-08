@@ -1,16 +1,22 @@
 package service;
 
-import command.PlaylistCommand.Snapshot;
+import entity.Playlist;
 import entity.Song;
-import repository.SongRepository;
+import repository.ISongRepository;
+
+import java.sql.SQLException;
 
 public class SongService {
-    Song songThatIsPlaying;
-    boolean musicIsPlaying;
-    boolean isSongRepeated;
-    SongRepository songRepository;
+    Song songThatIsPlaying = null;
+    boolean musicIsPlaying = false;
+    boolean isSongRepeated = false;
+    ISongRepository songRepository;
 
-    public void playMusic(long id) {
+    public SongService(ISongRepository songRepository) {
+        this.songRepository = songRepository;
+    }
+
+    public void playMusic(long id) throws SQLException {
         songThatIsPlaying = songRepository.getById(id);
         musicIsPlaying = true;
     }
@@ -24,13 +30,16 @@ public class SongService {
         isSongRepeated = true;
     }
 
-    public void deleteSong(long id) {
+    public void deleteSong(long id) throws SQLException {
         songRepository.delete(id);
     }
 
-    public void addSong(String name, String author, String genre, int duration, double size){
-        Song newSong = new Song(name, author, genre, duration, size);
-        songRepository.add(newSong);
+    public Song getSongForAdding(long id) throws SQLException {
+        return songRepository.getById(id);
+    }
+
+    public Song addSong(Song song) throws SQLException {
+        return songRepository.add(song);
     }
 
 

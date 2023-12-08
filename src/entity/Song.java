@@ -3,20 +3,24 @@ package entity;
 public class Song {
     private final long id;
     private String name;
-    private String author;
     private String genre;
-    private int duration;
-    private double size;
 
-    public Song(String name, String author, String genre, int duration, double size) {
+    private String path;
+
+
+
+    public Song(String name, String path, String genre) {
         this.genre = genre;
         id = System.nanoTime();
         this.name = name;
-        this.author = author;
-        this.duration = duration;
-        this.size = size;
+        this.path=path;
     }
-
+    public Song(String name, String path, String genre, Long id) {
+        this.genre = genre;
+        this.id = id;
+        this.name = name;
+        this.path=path;
+    }
     public String getGenre() {
         return genre;
     }
@@ -37,27 +41,20 @@ public class Song {
         this.name = name;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getPath() {
+        return path;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setPath(String path) {
+        this.path = path;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public double getSize() {
-        return size;
-    }
-
-    public void setSize(double size) {
-        this.size = size;
+    @Override
+    public String toString() {
+        return "Song{" +id+
+                ", name='" + name + '\'' +
+                ", genre='" + genre + '\'' +
+                ", path='" + path + '\'' +
+                '}';
     }
 }

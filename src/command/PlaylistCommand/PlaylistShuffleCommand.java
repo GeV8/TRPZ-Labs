@@ -7,6 +7,10 @@ public class PlaylistShuffleCommand extends PlaylistCommand {
 
     private PlaylistService playlistService;
 
+    public PlaylistShuffleCommand(PlaylistService playlistService) {
+        this.playlistService = playlistService;
+    }
+
     @Override
     public void execute() {
         playlistService.shufflePlaylist();

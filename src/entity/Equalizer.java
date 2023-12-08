@@ -2,15 +2,23 @@ package entity;
 
 public class Equalizer {
     private final long id;
+    private String name;
     private int volume;
     private int bassBooster;
-    private int soundBooster;
 
-    public Equalizer(long id, int volume, int bassBooster, int soundBooster) {
+
+    public Equalizer(String name, int volume, int bassBooster) {
         this.id = System.nanoTime();
+        this.name = name;
         this.volume = volume;
         this.bassBooster = bassBooster;
-        this.soundBooster = soundBooster;
+    }
+
+    public Equalizer(long id, String name, int volume, int bassBooster) {
+        this.id = id;
+        this.name = name;
+        this.volume = volume;
+        this.bassBooster = bassBooster;
     }
 
     public long getId() {
@@ -33,11 +41,12 @@ public class Equalizer {
         this.bassBooster = bassBooster;
     }
 
-    public int getSoundBooster() {
-        return soundBooster;
+    public String getName() {
+        return name;
     }
 
-    public void setSoundBooster(int soundBooster) {
-        this.soundBooster = soundBooster;
+    public void setName(String name) {
+        this.name = name;
     }
+
 }

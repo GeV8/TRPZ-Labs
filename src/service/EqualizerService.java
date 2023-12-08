@@ -1,15 +1,19 @@
 package service;
 
 import entity.Equalizer;
-import repository.EqualizerRepository;
+import repository.IEqualizerRepository;
+
+import java.sql.SQLException;
 
 public class EqualizerService {
-    EqualizerRepository equalizerRepository;
+    IEqualizerRepository equalizerRepository;
     Equalizer chosenEqualizer;
 
+    public EqualizerService(IEqualizerRepository equalizerRepository) {
+        this.equalizerRepository = equalizerRepository;
+    }
 
-
-    public void chooseEqualizer(long id) {
+    public void chooseEqualizer(long id) throws SQLException {
         chosenEqualizer = equalizerRepository.getById(id);
     }
 
@@ -21,8 +25,7 @@ public class EqualizerService {
         chosenEqualizer.setBassBooster(volume);
     }
 
-    public void changeSoundBooster(int volume) {
-        chosenEqualizer.setSoundBooster(volume);
+    public void addNewEqualizer(Equalizer equalizer) throws SQLException {
+        equalizerRepository.add(equalizer);
     }
-
 }
