@@ -28,4 +28,8 @@ public class EqualizerService {
     public void addNewEqualizer(Equalizer equalizer) throws SQLException {
         equalizerRepository.add(equalizer);
     }
+
+    public Equalizer getChosenEqualizer() {
+        return chosenEqualizer;
+    }
 }

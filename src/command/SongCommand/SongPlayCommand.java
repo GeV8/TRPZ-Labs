@@ -9,10 +9,10 @@ public class SongPlayCommand extends SongCommand {
     Song song;
     private SongService songService;
 
-    public SongPlayCommand(SongService songService) {
+    public SongPlayCommand(Song song, SongService songService) {
+        this.song = song;
         this.songService = songService;
     }
-
 
     @Override
     public void execute() throws SQLException {

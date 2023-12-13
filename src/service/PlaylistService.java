@@ -1,6 +1,5 @@
 package service;
 
-import Iterator.SongIterator;
 import entity.Playlist;
 import entity.Song;
 import repository.IPlaylistRepository;
@@ -18,6 +17,10 @@ public class PlaylistService {
 
     public void openPlaylist(long id) throws SQLException {
         openedPlaylist = playlistRepository.getById(id);
+    }
+
+    public Song openSongFromPlaylist(long id){
+        return openedPlaylist.getSongs().stream().filter(s -> s.getId()==id).findFirst().get();
     }
 
     public void closePlaylist() {

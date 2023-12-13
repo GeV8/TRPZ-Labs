@@ -16,6 +16,8 @@ public class SongService {
         this.songRepository = songRepository;
     }
 
+
+
     public void playMusic(long id) throws SQLException {
         songThatIsPlaying = songRepository.getById(id);
         musicIsPlaying = true;
