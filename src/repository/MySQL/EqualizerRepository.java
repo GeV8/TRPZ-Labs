@@ -56,7 +56,7 @@ public class EqualizerRepository implements IEqualizerRepository {
     }
 
     @Override
-    public List<Equalizer> getAll() throws SQLException {
+    public LinkedList<Equalizer> getAll() throws SQLException {
         LinkedList<Equalizer> equalizerList = new LinkedList<>();
         PreparedStatement preparedStatement = connection.prepareStatement(getAll);
         ResultSet resultSet = preparedStatement.executeQuery();

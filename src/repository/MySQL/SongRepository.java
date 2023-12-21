@@ -5,7 +5,6 @@ import repository.ISongRepository;
 
 import java.sql.*;
 import java.util.LinkedList;
-import java.util.List;
 
 public class SongRepository implements ISongRepository {
     Connection connection;
@@ -52,7 +51,7 @@ public class SongRepository implements ISongRepository {
     }
 
     @Override
-    public List<Song> getAll() throws SQLException {
+    public LinkedList<Song> getAll() throws SQLException {
         LinkedList<Song> songLinkedList = new LinkedList<>();
         PreparedStatement preparedStatement = connection.prepareStatement(getAll);
         ResultSet resultSet = preparedStatement.executeQuery();

@@ -11,8 +11,10 @@ import service.PlaylistService;
 import service.SongService;
 import visitor.MediaPlayerVisitor;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.LinkedList;
 
 public class MediaPlayerFacade implements IMediaPlayerFacade {
 
@@ -52,6 +54,27 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     }
 
     @Override
+    public LinkedList<Playlist> getAllPlaylist() throws SQLException {
+        return playlistService.getAllPlaylist();
+    }
+
+    @Override
+    public Playlist getChoosenPlaylist(long id) throws SQLException {
+        playlistService.openPlaylist(id);
+        return playlistService.getOpenedPlaylist();
+    }
+
+    @Override
+    public void playSong(long id) throws SQLException {
+        songService.playMusic(id);
+    }
+
+    @Override
+    public void pauseSong() throws SQLException {
+        songService.pauseMusic();
+    }
+
+    @Override
     public void addSong(String name, String path, String genre) throws SQLException {
         songService.addSong(new Song(name, path, genre));
     }
@@ -65,4 +88,5 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     public void addSongToPlaylist(long idOfSong, long idOfPlaylist) throws SQLException {
         playlistService.addSongToPlaylist(idOfPlaylist, idOfSong);
     }
+
 }

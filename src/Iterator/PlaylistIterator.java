@@ -3,12 +3,13 @@ package Iterator;
 import entity.Playlist;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class PlaylistIterator implements IPlaylistIterator {
-    ArrayList<Playlist> playlistList;
+    LinkedList<Playlist> playlistList;
     private int currentPosition;
 
-    public PlaylistIterator(ArrayList<Playlist> songList) {
+    public PlaylistIterator(LinkedList<Playlist> songList) {
         this.playlistList = songList;
         this.currentPosition = 0;
     }

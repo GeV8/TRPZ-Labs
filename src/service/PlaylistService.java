@@ -6,6 +6,8 @@ import repository.IPlaylistRepository;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 public class PlaylistService {
     IPlaylistRepository playlistRepository;
@@ -55,5 +57,8 @@ public class PlaylistService {
 
     public void addSongToPlaylist(long idOfPlaylist, long idOfSong) throws SQLException {
         playlistRepository.addSongToPlaylist(idOfPlaylist, idOfSong);
+    }
+    public LinkedList<Playlist> getAllPlaylist() throws SQLException {
+        return playlistRepository.getAll();
     }
 }

@@ -1,5 +1,6 @@
 package visitor;
 
+import Iterator.PlaylistIterator;
 import Iterator.SongIterator;
 import command.PlaylistCommand.PlaylistShuffleCommand;
 import command.SongCommand.SongDeleteCommand;
@@ -10,6 +11,10 @@ import entity.Song;
 import service.EqualizerService;
 import service.PlaylistService;
 import service.SongService;
+
+import java.io.PrintWriter;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MediaPlayerVisitor implements IMediaPlayerVisitor {
     EqualizerService equalizerService;
@@ -27,7 +32,6 @@ public class MediaPlayerVisitor implements IMediaPlayerVisitor {
         System.out.println(playlist.getName());
         System.out.println("Пісні плейліста:");
         SongIterator songIterator = new SongIterator(playlist.getSongs());
-        PlaylistShuffleCommand playlistShuffleCommand = new PlaylistShuffleCommand(playlistService);
         while (songIterator.hasNext()) {
             visitSong(songIterator.getNext());
 
@@ -37,8 +41,6 @@ public class MediaPlayerVisitor implements IMediaPlayerVisitor {
     @Override
     public void visitSong(Song song) {
         System.out.println(song.getName() + " " + song.getGenre());
-        SongPlayCommand songPlayCommand = new SongPlayCommand(song, songService);
-        SongDeleteCommand songDeleteCommand = new SongDeleteCommand(song, songService);
     }
 
     @Override
@@ -46,5 +48,10 @@ public class MediaPlayerVisitor implements IMediaPlayerVisitor {
         System.out.println(equalizer.getName());
         System.out.println(equalizer.getBassBooster());
         System.out.println(equalizer.getBassBooster());
+    }
+
+    @Override
+    public void visitAllPlaylists(LinkedList<Playlist> playlists) {
+        PlaylistIterator playlistIterator = new PlaylistIterator(playlists);
     }
 }

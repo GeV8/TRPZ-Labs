@@ -1,6 +1,7 @@
 package repository;
 
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 public interface IRepository<T> {
@@ -8,7 +9,7 @@ public interface IRepository<T> {
 
     T getById(long id) throws SQLException;
 
-    List<T> getAll() throws SQLException;
+    LinkedList<T> getAll() throws SQLException;
 
     T delete(long id) throws SQLException;
 

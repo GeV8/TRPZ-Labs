@@ -6,7 +6,6 @@ import repository.IPlaylistRepository;
 
 import java.sql.*;
 import java.util.LinkedList;
-import java.util.List;
 
 public class PlaylistRepository implements IPlaylistRepository {
 
@@ -14,7 +13,7 @@ public class PlaylistRepository implements IPlaylistRepository {
 
     private static final String addPlaylist = "INSERT INTO playlists(PlaylistName) values (?)";
     private static final String getById = "SELECT id, PlaylistName FROM playlists WHERE id=?";
-    private static final String getAll = "SELECT Id, SongName, path FROM songs";
+    private static final String getAll = "SELECT Id, PlaylistName FROM playlists";
     private static final String delete = "DELETE FROM playlists where id=?";
     private static final String deleteAllSongsOfPlaylist = "DELETE FROM playlist_song where playlist_id=?";
     private static final String getSongsOfPlaylist = "SELECT * from songs join playlist_song ps on songs.id = ps.song_id where ps.playlist_id=?";
@@ -52,14 +51,14 @@ public class PlaylistRepository implements IPlaylistRepository {
     }
 
     @Override
-    public List<Playlist> getAll() throws SQLException {
+    public LinkedList<Playlist> getAll() throws SQLException {
         LinkedList<Playlist> playlists = new LinkedList<>();
         PreparedStatement preparedStatement = connection.prepareStatement(getAll);
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             long id = resultSet.getLong("id");
             Playlist playlist = new Playlist(
-                    resultSet.getString("songName"),
+                    resultSet.getString("PlaylistName"),
                     id,
                     getSongsOfPlaylist(id)
             );

@@ -4,14 +4,16 @@ import Iterator.PlaylistIterator;
 import Iterator.SongIterator;
 import command.PlaylistCommand.Snapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class Playlist {
+public class Playlist implements Serializable {
     private final long id;
     private String name;
+    private static final long serialVersionUID = 1L;
 
 
     private LinkedList<Song> songs;
