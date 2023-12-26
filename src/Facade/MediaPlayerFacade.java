@@ -1,19 +1,16 @@
 package Facade;
 
-import entity.Equalizer;
+import Iterator.PlaylistIterator;
+import command.PlaylistCommand.PlaylistShuffleCommand;
 import entity.Playlist;
 import entity.Song;
-import repository.MySQL.EqualizerRepository;
-import repository.MySQL.PlaylistRepository;
-import repository.MySQL.SongRepository;
+
 import service.EqualizerService;
 import service.PlaylistService;
 import service.SongService;
 import visitor.MediaPlayerVisitor;
 
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.LinkedList;
 
 public class MediaPlayerFacade implements IMediaPlayerFacade {
@@ -23,23 +20,25 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     private final EqualizerService equalizerService;
     private final MediaPlayerVisitor mediaPlayerVisitor;
 
+    private boolean musicIsPlaying = false;
 
-    public MediaPlayerFacade(Connection connection) throws SQLException {
-        this.playlistService = new PlaylistService(new PlaylistRepository(connection));
-        this.songService = new SongService(new SongRepository(connection));
-        this.equalizerService = new EqualizerService(new EqualizerRepository(connection));
+
+    public MediaPlayerFacade(Connection connection) {
+        this.playlistService = new PlaylistService(connection);
+        this.songService = new SongService(connection);
+        this.equalizerService = new EqualizerService();
         this.mediaPlayerVisitor = new MediaPlayerVisitor(equalizerService, playlistService, songService);
     }
 
     @Override
-    public void createPlaylist(String name) throws SQLException {
+    public void createPlaylist(String name) {
         playlistService.createPlaylist(new Playlist(name));
     }
 
     @Override
-    public void openPlaylist(long id) throws SQLException {
+    public void openPlaylist(long id) {
         playlistService.openPlaylist(id);
-        mediaPlayerVisitor.visitPlaylist(playlistService.getOpenedPlaylist());
+
     }
 
     @Override
@@ -48,45 +47,128 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     }
 
     @Override
-    public void openEqualizer(long id) throws SQLException {
-        equalizerService.chooseEqualizer(id);
-        mediaPlayerVisitor.visitEqualizer(equalizerService.getChosenEqualizer());
+    public void openEqualizer(long id) {
+
     }
 
     @Override
-    public LinkedList<Playlist> getAllPlaylist() throws SQLException {
+    public LinkedList<Playlist> getAllPlaylist() {
         return playlistService.getAllPlaylist();
     }
 
     @Override
-    public Playlist getChoosenPlaylist(long id) throws SQLException {
-        playlistService.openPlaylist(id);
+    public Playlist getChoosenPlaylist() {
         return playlistService.getOpenedPlaylist();
     }
 
     @Override
-    public void playSong(long id) throws SQLException {
+    public void playSong(long id) {
         songService.playMusic(id);
+        musicIsPlaying = true;
     }
 
     @Override
-    public void pauseSong() throws SQLException {
-        songService.pauseMusic();
+    public void pauseSong() {
+        if (musicIsPlaying) {
+            songService.pauseMusic();
+            musicIsPlaying = false;
+        }
     }
 
     @Override
-    public void addSong(String name, String path, String genre) throws SQLException {
-        songService.addSong(new Song(name, path, genre));
+    public void resumeSong() {
+        if (!musicIsPlaying) {
+            songService.resumeSong();
+            musicIsPlaying = true;
+        }
     }
 
     @Override
-    public void createEqualizer(String name, int volume, int bassBooster) throws SQLException {
-        equalizerService.addNewEqualizer(new Equalizer(name, volume, bassBooster));
+    public void restartSong() {
+        songService.restartSong();
     }
 
     @Override
-    public void addSongToPlaylist(long idOfSong, long idOfPlaylist) throws SQLException {
-        playlistService.addSongToPlaylist(idOfPlaylist, idOfSong);
+    public void stopSong() {
+        songService.stopSong();
+        musicIsPlaying = false;
     }
 
+    @Override
+    public void loopSong() {
+        songService.repeatSong();
+    }
+
+
+
+    @Override
+    public PlaylistShuffleCommand generateShuffleCommand() {
+        return new PlaylistShuffleCommand(playlistService);
+    }
+
+
+    @Override
+    public Song addSong(String name, String path, String genre) {
+        return songService.addSong(new Song(name, path, genre));
+    }
+
+    @Override
+    public void addSongToPlaylist(long idOfSong, long idOfPlaylist) {
+        playlistService.addSongToPlaylist(idOfSong, idOfPlaylist);
+    }
+
+    @Override
+    public boolean isMusicIsPlaying() {
+        return musicIsPlaying;
+    }
+
+    @Override
+    public LinkedList<Song> getAllSongs() {
+        return songService.getAllSongs();
+    }
+
+    @Override
+    public void removeSongFromPlaylist(long songId, long playlistId) {
+        playlistService.removeSongFromPlaylist(songId, playlistId);
+    }
+
+    @Override
+    public void changeVolume(float value) {
+        equalizerService.changeVolume(songService.getClipOfSong(), value);
+    }
+
+    @Override
+    public long getSeconds() {
+        return songService.getSeconds();
+    }
+
+    @Override
+    public void setSeconds(long position) {
+        songService.setSeconds(position);
+    }
+
+    @Override
+    public long getPosition() {
+        return songService.getPosition();
+    }
+
+    @Override
+    public void playPlaylist(Playlist playlist) {
+        songService.playFirstPlaylist(playlist.getSongs());
+        musicIsPlaying = true;
+    }
+
+    @Override
+    public void deletePlaylist() {
+        playlistService.deletePlaylist();
+    }
+
+    @Override
+    public void deleteSong(Song song) {
+        PlaylistIterator playlistIterator = new PlaylistIterator(getAllPlaylist());
+        while(playlistIterator.hasNext()){
+            removeSongFromPlaylist(song.getId(), playlistIterator.getNext().getId());
+        }
+        songService.deleteSong(song.getId());
+    }
 }

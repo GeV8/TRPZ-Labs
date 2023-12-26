@@ -20,59 +20,79 @@ public class SongRepository implements ISongRepository {
 
 
     @Override
-    public Song add(Song song) throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(addSong, Statement.RETURN_GENERATED_KEYS);
-        preparedStatement.setString(1, song.getGenre());
-        preparedStatement.setString(2, song.getName());
-        preparedStatement.setString(3, song.getPath());
-        preparedStatement.executeUpdate();
-        ResultSet resultSet = preparedStatement.getGeneratedKeys();
-        resultSet.next();
-        return new Song(
-                song.getName(),
-                song.getPath(),
-                song.getGenre(),
-                resultSet.getLong(1)
-        );
+    public Song add(Song song){
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(addSong, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, song.getGenre());
+            preparedStatement.setString(2, song.getName());
+            preparedStatement.setString(3, song.getPath());
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            resultSet.next();
+            return new Song(
+                    song.getName(),
+                    song.getPath(),
+                    song.getGenre(),
+                    resultSet.getLong(1)
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
-    public Song getById(long id) throws SQLException {
-        PreparedStatement stmt = connection.prepareStatement(getById);
-        stmt.setLong(1, id);
-        ResultSet resultSet = stmt.executeQuery();
-        resultSet.next();
-        return new Song(
-                resultSet.getString("songName"),
-                resultSet.getString("path"),
-                resultSet.getString("songGenre"),
-                resultSet.getLong("id")
-        );
-    }
-
-    @Override
-    public LinkedList<Song> getAll() throws SQLException {
-        LinkedList<Song> songLinkedList = new LinkedList<>();
-        PreparedStatement preparedStatement = connection.prepareStatement(getAll);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            Song song = new Song(
+    public Song getById(long id){
+        try {
+            PreparedStatement stmt = connection.prepareStatement(getById);
+            stmt.setLong(1, id);
+            ResultSet resultSet = stmt.executeQuery();
+            resultSet.next();
+            return new Song(
                     resultSet.getString("songName"),
                     resultSet.getString("path"),
                     resultSet.getString("songGenre"),
-                    resultSet.getLong("id"));
-            songLinkedList.add(song);
+                    resultSet.getLong("id")
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return songLinkedList;
+
     }
 
     @Override
-    public Song delete(long id) throws SQLException {
-        Song songToDelete = getById(id);
-        PreparedStatement statement = connection.prepareStatement(delete);
-        statement.setLong(1, id);
-        statement.execute();
-        return songToDelete;
+    public LinkedList<Song> getAll() {
+        try {
+            LinkedList<Song> songLinkedList = new LinkedList<>();
+            PreparedStatement preparedStatement = connection.prepareStatement(getAll);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Song song = new Song(
+                        resultSet.getString("songName"),
+                        resultSet.getString("path"),
+                        resultSet.getString("songGenre"),
+                        resultSet.getLong("id"));
+                songLinkedList.add(song);
+            }
+            return songLinkedList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public Song delete(long id) {
+        try {
+            Song songToDelete = getById(id);
+            PreparedStatement statement = connection.prepareStatement(delete);
+            statement.setLong(1, id);
+            statement.execute();
+            return songToDelete;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

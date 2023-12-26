@@ -1,31 +1,52 @@
 package Facade;
 
+import command.PlaylistCommand.PlaylistShuffleCommand;
 import entity.Playlist;
+import entity.Song;
 
-import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.LinkedList;
 
 public interface IMediaPlayerFacade {
-    public void addSongToPlaylist(long idOfSong, long idOfPlaylist) throws SQLException;
+    void addSongToPlaylist(long idOfSong, long idOfPlaylist);
 
-    public void addSong(String name, String path, String genre) throws SQLException;
-
-    public void createEqualizer(String name, int volume, int bassBooster) throws SQLException;
-
-    public void createPlaylist(String name) throws SQLException;
-
-    public void openPlaylist(long id) throws SQLException;
-    public void openSong(long id);
-    public void openEqualizer(long id) throws SQLException;
-
-    public LinkedList<Playlist> getAllPlaylist() throws SQLException;
-
-    public Playlist getChoosenPlaylist(long id) throws SQLException;
-
-    public void playSong(long id) throws SQLException;
-
-    public void pauseSong() throws SQLException;
+    Song addSong(String name, String path, String genre);
 
 
+     void createPlaylist(String name);
+
+     void openPlaylist(long id);
+
+     void openSong(long id);
+
+     void openEqualizer(long id);
+
+     LinkedList<Playlist> getAllPlaylist();
+
+     Playlist getChoosenPlaylist();
+
+     void playSong(long id);
+
+     void pauseSong();
+
+     void resumeSong();
+
+     void restartSong();
+
+     void stopSong();
+
+     void loopSong();
+
+
+     PlaylistShuffleCommand generateShuffleCommand();
+     boolean isMusicIsPlaying();
+     LinkedList<Song> getAllSongs();
+     void removeSongFromPlaylist(long songId, long playlistId);
+     void changeVolume(float value);
+     long getSeconds();
+     void setSeconds(long position);
+     long getPosition();
+     void playPlaylist(Playlist playlist);
+     void deletePlaylist();
+
+     void deleteSong(Song song);
 }

@@ -51,10 +51,6 @@ public class Song {
 
     @Override
     public String toString() {
-        return "Song{" +id+
-                ", name='" + name + '\'' +
-                ", genre='" + genre + '\'' +
-                ", path='" + path + '\'' +
-                '}';
+        return name +" ("+genre+")";
     }
 }

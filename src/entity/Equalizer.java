@@ -4,21 +4,21 @@ public class Equalizer {
     private final long id;
     private String name;
     private int volume;
-    private int bassBooster;
 
 
-    public Equalizer(String name, int volume, int bassBooster) {
+
+    public Equalizer(String name, int volume) {
         this.id = System.nanoTime();
         this.name = name;
         this.volume = volume;
-        this.bassBooster = bassBooster;
+
     }
 
-    public Equalizer(long id, String name, int volume, int bassBooster) {
+    public Equalizer(long id, String name, int volume) {
         this.id = id;
         this.name = name;
         this.volume = volume;
-        this.bassBooster = bassBooster;
+
     }
 
     public long getId() {
@@ -33,13 +33,9 @@ public class Equalizer {
         this.volume = volume;
     }
 
-    public int getBassBooster() {
-        return bassBooster;
-    }
 
-    public void setBassBooster(int bassBooster) {
-        this.bassBooster = bassBooster;
-    }
+
+
 
     public String getName() {
         return name;

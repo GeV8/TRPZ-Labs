@@ -3,14 +3,13 @@ package visitor;
 import Iterator.PlaylistIterator;
 import Iterator.SongIterator;
 import command.PlaylistCommand.PlaylistShuffleCommand;
-import command.SongCommand.SongDeleteCommand;
-import command.SongCommand.SongPlayCommand;
 import entity.Equalizer;
 import entity.Playlist;
 import entity.Song;
 import service.EqualizerService;
 import service.PlaylistService;
 import service.SongService;
+
 
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -46,8 +45,6 @@ public class MediaPlayerVisitor implements IMediaPlayerVisitor {
     @Override
     public void visitEqualizer(Equalizer equalizer) {
         System.out.println(equalizer.getName());
-        System.out.println(equalizer.getBassBooster());
-        System.out.println(equalizer.getBassBooster());
     }
 
     @Override

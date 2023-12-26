@@ -9,8 +9,8 @@ public class PlaylistIterator implements IPlaylistIterator {
     LinkedList<Playlist> playlistList;
     private int currentPosition;
 
-    public PlaylistIterator(LinkedList<Playlist> songList) {
-        this.playlistList = songList;
+    public PlaylistIterator(LinkedList<Playlist> playlistList) {
+        this.playlistList = playlistList;
         this.currentPosition = 0;
     }
 
