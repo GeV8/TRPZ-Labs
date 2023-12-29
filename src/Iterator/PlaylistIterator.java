@@ -2,7 +2,6 @@ package Iterator;
 
 import entity.Playlist;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class PlaylistIterator implements IPlaylistIterator {
@@ -24,9 +23,9 @@ public class PlaylistIterator implements IPlaylistIterator {
         if (!hasNext()) {
             return null;
         }
-        Playlist songIteration=playlistList.get(currentPosition);
+        Playlist songIteration = playlistList.get(currentPosition);
         currentPosition++;
-        return songIteration ;
+        return songIteration;
 
     }
 

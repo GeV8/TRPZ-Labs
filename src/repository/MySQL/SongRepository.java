@@ -20,9 +20,9 @@ public class SongRepository implements ISongRepository {
 
 
     @Override
-    public Song add(Song song){
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(addSong, Statement.RETURN_GENERATED_KEYS);
+    public Song add(Song song) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(addSong, Statement.RETURN_GENERATED_KEYS)) {
+
             preparedStatement.setString(1, song.getGenre());
             preparedStatement.setString(2, song.getName());
             preparedStatement.setString(3, song.getPath());
@@ -42,9 +42,9 @@ public class SongRepository implements ISongRepository {
     }
 
     @Override
-    public Song getById(long id){
-        try {
-            PreparedStatement stmt = connection.prepareStatement(getById);
+    public Song getById(long id) {
+        try (PreparedStatement stmt = connection.prepareStatement(getById)) {
+
             stmt.setLong(1, id);
             ResultSet resultSet = stmt.executeQuery();
             resultSet.next();
@@ -62,9 +62,9 @@ public class SongRepository implements ISongRepository {
 
     @Override
     public LinkedList<Song> getAll() {
-        try {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getAll)) {
             LinkedList<Song> songLinkedList = new LinkedList<>();
-            PreparedStatement preparedStatement = connection.prepareStatement(getAll);
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Song song = new Song(
@@ -83,9 +83,8 @@ public class SongRepository implements ISongRepository {
 
     @Override
     public Song delete(long id) {
-        try {
+        try (PreparedStatement statement = connection.prepareStatement(delete)) {
             Song songToDelete = getById(id);
-            PreparedStatement statement = connection.prepareStatement(delete);
             statement.setLong(1, id);
             statement.execute();
             return songToDelete;

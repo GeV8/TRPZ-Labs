@@ -3,7 +3,7 @@ package command.PlaylistCommand;
 import entity.Playlist;
 import entity.Song;
 
-import java.util.ArrayList;
+
 import java.util.LinkedList;
 
 public class Snapshot {
@@ -32,7 +32,7 @@ public class Snapshot {
         this.songs = songs;
     }
 
-    public void restore(){
+    public void restore() {
         playlist.setSongs(songs);
     }
 }

@@ -41,9 +41,9 @@ public interface IMediaPlayerFacade {
      boolean isMusicIsPlaying();
      LinkedList<Song> getAllSongs();
      void removeSongFromPlaylist(long songId, long playlistId);
-     void changeVolume(float value);
+     void changeVolume(int value);
      long getSeconds();
-     void setSeconds(long position);
+     void setSeconds(int value);
      long getPosition();
      void playPlaylist(Playlist playlist);
      void deletePlaylist();

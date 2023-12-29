@@ -1,3 +1,4 @@
+import Facade.IMediaPlayerFacade;
 import Facade.MediaPlayerFacade;
 import command.PlaylistCommand.PlaylistShuffleCommand;
 import entity.Playlist;
@@ -6,6 +7,7 @@ import entity.Song;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
 
 import javax.swing.*;
@@ -32,6 +34,7 @@ public class Main {
     private static boolean sliderChangedByUser = true;
     private static JSlider seekSlider;
     private static JDialog addPlaylistDialog;
+    private static IMediaPlayerFacade mediaPlayerFacade;
 
 
     public static void main(String[] args) {
@@ -39,7 +42,7 @@ public class Main {
         try {
             Connection connection = DriverManager.getConnection(url, user, password);
 
-            MediaPlayerFacade mediaPlayerFacade = new MediaPlayerFacade(connection);
+            mediaPlayerFacade = new MediaPlayerFacade(connection);
 
 
             JFrame frame = new JFrame("Медіа програвач");
@@ -85,7 +88,12 @@ public class Main {
             JButton shuffleButton = new JButton("Перемішати");
             JButton undoButton = new JButton("Відмінити");
 
-            playPlaylistButton.addActionListener(e -> mediaPlayerFacade.playPlaylist(mediaPlayerFacade.getChoosenPlaylist()));
+            playPlaylistButton.addActionListener(e -> {
+                        if (mediaPlayerFacade.getChoosenPlaylist() != null) {
+                            mediaPlayerFacade.playPlaylist(mediaPlayerFacade.getChoosenPlaylist());
+                        }
+                    }
+            );
 
             shuffleButton.addActionListener(e -> {
                 if (playlistJList.getSelectedValue() != null) {
@@ -162,8 +170,12 @@ public class Main {
             });
 
             stopButton.addActionListener(e -> {
-                if (mediaPlayerFacade.isMusicIsPlaying()) {
-                    mediaPlayerFacade.stopSong();
+                mediaPlayerFacade.stopSong();
+                try {
+                    connection.close();
+                    System.exit(0);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
                 }
 
             });
@@ -206,9 +218,7 @@ public class Main {
     }
 
 
-
-
-    private static void updateSliderPosition(MediaPlayerFacade mediaPlayerFacade) {
+    private static void updateSliderPosition(IMediaPlayerFacade mediaPlayerFacade) {
         if (mediaPlayerFacade.isMusicIsPlaying()) {
             long length = mediaPlayerFacade.getSeconds();
             long position = mediaPlayerFacade.getPosition();
@@ -219,22 +229,19 @@ public class Main {
         }
     }
 
-    private static void adjustPosition(int value, MediaPlayerFacade songPlaylistFacade) {
+    private static void adjustPosition(int value, IMediaPlayerFacade songPlaylistFacade) {
         if (songPlaylistFacade.isMusicIsPlaying()) {
-            long length = songPlaylistFacade.getSeconds();
-            long newPosition = (value * length) / 100;
-            songPlaylistFacade.setSeconds(newPosition);
+            songPlaylistFacade.setSeconds(value);
         }
     }
 
-    private static void adjustVolume(int value, MediaPlayerFacade mediaPlayerFacade) {
+    private static void adjustVolume(int value, IMediaPlayerFacade mediaPlayerFacade) {
         if (mediaPlayerFacade.isMusicIsPlaying()) {
-            float gain = (float) value / 100.0f; // Переведіть значення у відсотки
-            mediaPlayerFacade.changeVolume(gain);
+            mediaPlayerFacade.changeVolume(value);
         }
     }
 
-    private static void deleteSelectedSong(MediaPlayerFacade songPlaylistFacade) {
+    private static void deleteSelectedSong(IMediaPlayerFacade songPlaylistFacade) {
         Song selectedSong = songJList.getSelectedValue();
         Playlist playlist = playlistJList.getSelectedValue();
 
@@ -245,7 +252,7 @@ public class Main {
         }
     }
 
-    private static void deleteSelectedPlaylist(MediaPlayerFacade songPlaylistFacade) {
+    private static void deleteSelectedPlaylist(IMediaPlayerFacade songPlaylistFacade) {
 
         Playlist playlistToDelete = songPlaylistFacade.getChoosenPlaylist();
 
@@ -260,7 +267,7 @@ public class Main {
 
     }
 
-    private static void updateSongList(MediaPlayerFacade songPlaylistFacade) {
+    private static void updateSongList(IMediaPlayerFacade songPlaylistFacade) {
         songListModel.clear();
         Playlist selectedPlaylist = playlistJList.getSelectedValue();
         if (selectedPlaylist != null) {
@@ -271,14 +278,14 @@ public class Main {
         }
     }
 
-    private static void updateShuffle(MediaPlayerFacade songPlaylistFacade) {
+    private static void updateShuffle(IMediaPlayerFacade songPlaylistFacade) {
         songListModel.clear();
         for (Song song : songPlaylistFacade.getChoosenPlaylist().getSongs()) {
             songListModel.addElement(song);
         }
     }
 
-    private static void openAddSongDialog(MediaPlayerFacade songPlaylistFacade) {
+    private static void openAddSongDialog(IMediaPlayerFacade songPlaylistFacade) {
         if (addSongDialog == null) {
             // Якщо діалогове вікно ще не створене, створити його
             createAddSongDialog(songPlaylistFacade);
@@ -292,7 +299,7 @@ public class Main {
         addSongDialog.setVisible(true);
     }
 
-    private static void createAddSongDialog(MediaPlayerFacade songPlaylistFacade) {
+    private static void createAddSongDialog(IMediaPlayerFacade songPlaylistFacade) {
         addSongDialog = new JDialog();
         addSongDialog.setTitle("Додати пісню");
         addSongDialog.setSize(600, 300);
@@ -370,18 +377,15 @@ public class Main {
 
     }
 
-    private static void openAddPlaylistDialog(MediaPlayerFacade songPlaylistFacade) {
+    private static void openAddPlaylistDialog(IMediaPlayerFacade songPlaylistFacade) {
         if (addPlaylistDialog == null) {
-            // Якщо діалогове вікно ще не створене, створити його
             createPlaylistDialog(songPlaylistFacade);
         }
-        // Очистити текстові поля для імені при кожному відкритті вікна
         playlistNameField.setText("");
-
         addPlaylistDialog.setVisible(true);
     }
 
-    private static void createPlaylistDialog(MediaPlayerFacade songPlaylistFacade) {
+    private static void createPlaylistDialog(IMediaPlayerFacade songPlaylistFacade) {
         addPlaylistDialog = new JDialog();
         addPlaylistDialog.setTitle("Додати плейліст");
         addPlaylistDialog.setSize(600, 300);
@@ -415,7 +419,7 @@ public class Main {
 
     }
 
-    private static void addPlaylist(MediaPlayerFacade songPlaylistFacade) {
+    private static void addPlaylist(IMediaPlayerFacade songPlaylistFacade) {
         if (!playlistNameField.getText().isEmpty()) {
             songPlaylistFacade.createPlaylist(playlistNameField.getText());
             addPlaylistDialog.setVisible(false);
@@ -423,7 +427,7 @@ public class Main {
         }
     }
 
-    private static void addExistingSong(MediaPlayerFacade songPlaylistFacade) {
+    private static void addExistingSong(IMediaPlayerFacade songPlaylistFacade) {
         Song selectedSong = (Song) existingSongsComboBox.getSelectedItem();
         if (selectedSong != null) {
             songPlaylistFacade.addSongToPlaylist(selectedSong.getId(), songPlaylistFacade.getChoosenPlaylist().getId());
@@ -444,7 +448,7 @@ public class Main {
         }
     }
 
-    private static void addSong(MediaPlayerFacade songPlaylistFacade) {
+    private static void addSong(IMediaPlayerFacade songPlaylistFacade) {
         // Отримати ім'я та шлях пісні з текстових полей
         String songName = songNameTextField.getText();
         String songPath = songPathTextField.getText();
@@ -459,8 +463,8 @@ public class Main {
         addSongDialog.setVisible(false);
     }
 
-    private static void openDeleteSongDialog(MediaPlayerFacade mediaPlayerFacade){
-        if(deleteSongDialog==null){
+    private static void openDeleteSongDialog(IMediaPlayerFacade mediaPlayerFacade) {
+        if (deleteSongDialog == null) {
             createDeleteSongDialog(mediaPlayerFacade);
         }
         updateExistingSongsComboBox(mediaPlayerFacade);
@@ -468,7 +472,7 @@ public class Main {
 
     }
 
-    private static void createDeleteSongDialog(MediaPlayerFacade mediaPlayerFacade) {
+    private static void createDeleteSongDialog(IMediaPlayerFacade mediaPlayerFacade) {
         deleteSongDialog = new JDialog();
         deleteSongDialog.setTitle("Видалити пісню");
         deleteSongDialog.setSize(600, 300);
@@ -501,9 +505,9 @@ public class Main {
         deleteSongDialog.getContentPane().add(dialogPanel);
     }
 
-    private static void deleteSong(MediaPlayerFacade mediaPlayerFacade){
+    private static void deleteSong(IMediaPlayerFacade mediaPlayerFacade) {
         Song songToDelete = (Song) existingSongsComboBox.getSelectedItem();
-        if(songToDelete!=null){
+        if (songToDelete != null) {
             mediaPlayerFacade.deleteSong(songToDelete);
             updateSongList(mediaPlayerFacade);
             deleteSongDialog.setVisible(false);
@@ -511,7 +515,7 @@ public class Main {
 
     }
 
-    private static void updateExistingSongsComboBox(MediaPlayerFacade songPlaylistFacade) {
+    private static void updateExistingSongsComboBox(IMediaPlayerFacade songPlaylistFacade) {
         // Оновити випадаючий список існуючих пісень
         LinkedList<Song> songs = songPlaylistFacade.getAllSongs();
         DefaultComboBoxModel<Song> songComboBoxModel = new DefaultComboBoxModel<>();
@@ -522,7 +526,7 @@ public class Main {
         existingSongsComboBox.setModel(songComboBoxModel);
     }
 
-    private static void updatePlaylist(MediaPlayerFacade songPlaylistFacade) {
+    private static void updatePlaylist(IMediaPlayerFacade songPlaylistFacade) {
         playlistModel.clear();
         for (Playlist playlist : songPlaylistFacade.getAllPlaylist()) {
             playlistModel.addElement(playlist);

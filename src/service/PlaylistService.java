@@ -6,10 +6,9 @@ import repository.IPlaylistRepository;
 import repository.MySQL.PlaylistRepository;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
+
 
 public class PlaylistService {
     IPlaylistRepository playlistRepository;
@@ -35,7 +34,7 @@ public class PlaylistService {
         Collections.shuffle(openedPlaylist.getSongs());
     }
 
-    public void createPlaylist(Playlist playlist)  {
+    public void createPlaylist(Playlist playlist) {
         playlistRepository.add(playlist);
     }
 

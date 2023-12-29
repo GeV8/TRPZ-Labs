@@ -5,7 +5,7 @@ import service.PlaylistService;
 public class PlaylistShuffleCommand extends PlaylistCommand {
     private Snapshot backup;
 
-    private PlaylistService playlistService;
+    private final PlaylistService playlistService;
 
     public PlaylistShuffleCommand(PlaylistService playlistService) {
         this.playlistService = playlistService;
@@ -16,11 +16,11 @@ public class PlaylistShuffleCommand extends PlaylistCommand {
         playlistService.shufflePlaylist();
     }
 
-    public void createBackup(){
+    public void createBackup() {
         backup = playlistService.getOpenedPlaylist().createSnapshot();
     }
 
-    public void undo(){
+    public void undo() {
         backup.restore();
     }
 }

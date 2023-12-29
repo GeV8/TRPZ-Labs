@@ -8,19 +8,20 @@ public class Song {
     private String path;
 
 
-
     public Song(String name, String path, String genre) {
         this.genre = genre;
         id = System.nanoTime();
         this.name = name;
-        this.path=path;
+        this.path = path;
     }
+
     public Song(String name, String path, String genre, Long id) {
         this.genre = genre;
         this.id = id;
         this.name = name;
-        this.path=path;
+        this.path = path;
     }
+
     public String getGenre() {
         return genre;
     }
@@ -51,6 +52,6 @@ public class Song {
 
     @Override
     public String toString() {
-        return name +" ("+genre+")";
+        return name + " (" + genre + ")";
     }
 }

@@ -1,13 +1,10 @@
 package entity;
 
-import Iterator.PlaylistIterator;
-import Iterator.SongIterator;
+
 import command.PlaylistCommand.Snapshot;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
+
 import java.util.LinkedList;
 
 public class Playlist implements Serializable {
@@ -23,6 +20,7 @@ public class Playlist implements Serializable {
         this.name = name;
         this.songs = new LinkedList<>();
     }
+
     public Playlist(String name, long id, LinkedList<Song> list) {
         this.id = id;
         this.name = name;
@@ -32,7 +30,7 @@ public class Playlist implements Serializable {
     public Playlist(long id, String name) {
         this.id = id;
         this.name = name;
-        this.songs=new LinkedList<>();
+        this.songs = new LinkedList<>();
     }
 
     public long getId() {

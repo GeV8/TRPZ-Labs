@@ -6,7 +6,6 @@ public class Equalizer {
     private int volume;
 
 
-
     public Equalizer(String name, int volume) {
         this.id = System.nanoTime();
         this.name = name;
@@ -32,9 +31,6 @@ public class Equalizer {
     public void setVolume(int volume) {
         this.volume = volume;
     }
-
-
-
 
 
     public String getName() {

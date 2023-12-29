@@ -1,6 +1,5 @@
 package service;
 
-import entity.Playlist;
 import entity.Song;
 import repository.ISongRepository;
 import repository.MySQL.SongRepository;
@@ -10,9 +9,7 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 
@@ -38,7 +35,7 @@ public class SongService {
                 clipOfSong = AudioSystem.getClip();
                 clipOfSong.open(audioInputStream);
             } else {
-                clipOfSong.close();
+                stopSong();
                 AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(songRepository.getById(id).getPath()).getAbsoluteFile());
                 clipOfSong = AudioSystem.getClip();
                 clipOfSong.open(audioInputStream);
@@ -75,11 +72,11 @@ public class SongService {
             if (clipOfSong == null) {
                 createClipForPlaylist(path);
             } else {
-                clipOfSong.close();
+                stopSong();
                 createClipForPlaylist(path);
             }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -110,7 +107,6 @@ public class SongService {
     public void resumeSong() {
         clipOfSong.setFramePosition(framePosition);
         clipOfSong.start();
-
     }
 
     public void restartSong() {
@@ -119,10 +115,17 @@ public class SongService {
         clipOfSong.start();
     }
 
-    public void stopSong() {
+    private void stopSong() {
         clipOfSong.stop();
         clipOfSong.close();
         clipOfSong = null;
+    }
+    public void stopClip(){
+        if(clipOfSong!=null){
+            clipOfSong.stop();
+            clipOfSong.close();
+            clipOfSong = null;
+        }
     }
 
     public void repeatSong() {
@@ -153,7 +156,9 @@ public class SongService {
 
     public void setSeconds(long position) {
         if (clipOfSong != null) {
-            clipOfSong.setMicrosecondPosition(position);
+            long length = getSeconds();
+            long newPosition = (position * length) / 100;
+            clipOfSong.setMicrosecondPosition(newPosition);
         }
     }
 }

@@ -26,9 +26,8 @@ public class PlaylistRepository implements IPlaylistRepository {
 
 
     @Override
-    public Playlist add(Playlist playlist)  {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(addPlaylist, Statement.RETURN_GENERATED_KEYS);
+    public Playlist add(Playlist playlist) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(addPlaylist, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, playlist.getName());
             preparedStatement.execute();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -40,13 +39,12 @@ public class PlaylistRepository implements IPlaylistRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
-    public Playlist getById(long id)  {
-        try {
-            PreparedStatement stmt = connection.prepareStatement(getById);
+    public Playlist getById(long id) {
+        try (PreparedStatement stmt = connection.prepareStatement(getById)) {
+
             stmt.setLong(1, id);
             ResultSet resultSet = stmt.executeQuery();
             resultSet.next();
@@ -62,10 +60,10 @@ public class PlaylistRepository implements IPlaylistRepository {
     }
 
     @Override
-    public LinkedList<Playlist> getAll()  {
-        try {
+    public LinkedList<Playlist> getAll() {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getAll)) {
             LinkedList<Playlist> playlists = new LinkedList<>();
-            PreparedStatement preparedStatement = connection.prepareStatement(getAll);
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
@@ -84,10 +82,10 @@ public class PlaylistRepository implements IPlaylistRepository {
     }
 
     @Override
-    public Playlist delete(long id)  {
-        try {
+    public Playlist delete(long id) {
+        try (PreparedStatement songPreparedStatement = connection.prepareStatement(deleteAllSongsOfPlaylist)) {
             Playlist playlistToDelete = getById(id);
-            PreparedStatement songPreparedStatement = connection.prepareStatement(deleteAllSongsOfPlaylist);
+
             songPreparedStatement.setLong(1, id);
             songPreparedStatement.execute();
             PreparedStatement playlistPreparedStatement = connection.prepareStatement(delete);
@@ -101,10 +99,10 @@ public class PlaylistRepository implements IPlaylistRepository {
     }
 
     @Override
-    public LinkedList<Song> getSongsOfPlaylist(long id)  {
-        try {
+    public LinkedList<Song> getSongsOfPlaylist(long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getSongsOfPlaylist)) {
             LinkedList<Song> songOfPlaylist = new LinkedList<>();
-            PreparedStatement preparedStatement = connection.prepareStatement(getSongsOfPlaylist);
+
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -124,9 +122,9 @@ public class PlaylistRepository implements IPlaylistRepository {
     }
 
     @Override
-    public Playlist addSongToPlaylist(long idOfSong, long idOfPlaylist)  {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(addSongToPlaylist);
+    public Playlist addSongToPlaylist(long idOfSong, long idOfPlaylist) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(addSongToPlaylist)) {
+
             preparedStatement.setLong(1, idOfPlaylist);
             preparedStatement.setLong(2, idOfSong);
             preparedStatement.execute();
@@ -139,8 +137,7 @@ public class PlaylistRepository implements IPlaylistRepository {
 
     @Override
     public Playlist deleteSongFromPlaylist(long idOfSong, long idOfPlaylist) {
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(deleteSongFromPlaylist);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteSongFromPlaylist)) {
             preparedStatement.setLong(1, idOfPlaylist);
             preparedStatement.setLong(2, idOfSong);
             preparedStatement.execute();

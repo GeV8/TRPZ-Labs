@@ -19,7 +19,6 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     private final SongService songService;
     private final EqualizerService equalizerService;
     private final MediaPlayerVisitor mediaPlayerVisitor;
-
     private boolean musicIsPlaying = false;
 
 
@@ -90,7 +89,7 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
 
     @Override
     public void stopSong() {
-        songService.stopSong();
+        songService.stopClip();
         musicIsPlaying = false;
     }
 
@@ -98,7 +97,6 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     public void loopSong() {
         songService.repeatSong();
     }
-
 
 
     @Override
@@ -133,7 +131,7 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     }
 
     @Override
-    public void changeVolume(float value) {
+    public void changeVolume(int value) {
         equalizerService.changeVolume(songService.getClipOfSong(), value);
     }
 
@@ -143,8 +141,8 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     }
 
     @Override
-    public void setSeconds(long position) {
-        songService.setSeconds(position);
+    public void setSeconds(int value) {
+        songService.setSeconds(value);
     }
 
     @Override
@@ -166,7 +164,7 @@ public class MediaPlayerFacade implements IMediaPlayerFacade {
     @Override
     public void deleteSong(Song song) {
         PlaylistIterator playlistIterator = new PlaylistIterator(getAllPlaylist());
-        while(playlistIterator.hasNext()){
+        while (playlistIterator.hasNext()) {
             removeSongFromPlaylist(song.getId(), playlistIterator.getNext().getId());
         }
         songService.deleteSong(song.getId());
